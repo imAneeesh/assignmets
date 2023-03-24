@@ -1,0 +1,98 @@
+1. mysql> Select c.Customer_Name,p.Product_Name from Customer c JOIN Orders o on o.Customer_Id=c.Customer_Id JOIN Orde
+r_Details od on o.Order_Id=od.Order_Id JOIN Product p on p.Product_Id=od.Product_Id;
++---------------+-----------------+
+| Customer_Name | Product_Name    |
++---------------+-----------------+
+| John          | Television      |
+| John          | DVD             |
+| John          | Television      |
+| Smith         | Home Theatre    |
+| Ricky         | Chair           |
+| Ricky         | Computer        |
+| Ricky         | Ipod            |
+| Ricky         | Washing Machine |
+| Walsh         | Washing Machine |
+| Walsh         | DVD             |
+| Stefen        | Home Theatre    |
+| Fleming       | Panasonic Phone |
+| Fleming       | Home Theatre    |
+| Fleming       | Washing Machine |
+| Thomson       | Ipod            |
++---------------+-----------------+
+
+
+2. mysql> Select o.Order_Id, o.Order_Date, p.Product_Price*od.Quantity from Orders o JOIN Order_Details od on o.Order_Id=od.Order_Id JOIN Product p on od.Product_Id=p.Product_Id;
++----------+------------+-----------------------------+
+| Order_Id | Order_Date | p.Product_Price*od.Quantity |
++----------+------------+-----------------------------+
+|        1 | 2005-01-10 |                     7600.00 |
+|        1 | 2005-01-10 |                    10800.00 |
+|        2 | 2006-02-10 |                    38700.00 |
+|        3 | 2005-03-20 |                     3600.00 |
+|        3 | 2005-03-20 |                    71800.00 |
+|        3 | 2005-03-20 |                    12840.00 |
+|        4 | 2006-03-10 |                     7600.00 |
+|        5 | 2007-04-05 |                    38000.00 |
+|        5 | 2007-04-05 |                     3600.00 |
+|        6 | 2006-12-13 |                     3210.00 |
+|        7 | 2008-03-13 |                     2100.00 |
+|        8 | 2004-11-29 |                    38700.00 |
+|        8 | 2004-11-29 |                     7600.00 |
+|        9 | 2005-01-13 |                    58050.00 |
+|       10 | 2007-12-12 |                    19000.00 |
++----------+------------+-----------------------------+
+
+3. mysql> SELECT Customer_Name from Customer where Customer_Id not in (select Customer_Id from Orders);
++---------------+
+| Customer_Name |
++---------------+
+| David         |
++---------------+
+
+4. mysql> Select * from Product where Product_Id not in (SELECT Product_Id from Order_Details );
++------------+--------------+---------------+
+| Product_Id | Product_Name | Product_Price |
++------------+--------------+---------------+
+|          8 | Table        |        490.00 |
+|          9 | Sound System |      12050.00 |
++------------+--------------+---------------+
+
+
+5. mysql>  SELECT Customer_Name, SUM(od.Quantity*p.Product_Price) from Customer c JOIN Orders o on c.Customer_Id = o.Customer_Id JOIN Order_Details od on o.Order_Id=od.Order_Id JOIN Product p on p.Product_Id=od.Product_Id group by Customer_Name;
++---------------+----------------------------------+
+| Customer_Name | SUM(od.Quantity*p.Product_Price) |
++---------------+----------------------------------+
+| John          |                         60600.00 |
+| Smith         |                         38700.00 |
+| Ricky         |                         95840.00 |
+| Walsh         |                         18400.00 |
+| Stefen        |                         58050.00 |
+| Fleming       |                         48400.00 |
+| Thomson       |                          3210.00 |
++---------------+----------------------------------+
+
+6.mysql> ( SELECT c.* from Customer c JOIN Orders o on o.Customer_Id=c.Customer_Id order by o.Order_Id ASC LIMIT 1) UNION (SELECT c.*  from Customer c JOIN Orders o on o.Customer_Id=c.Customer_Id order by o.Order_Id DESC LIMIT 1);
++-------------+---------------+
+| Customer_Id | Customer_Name |
++-------------+---------------+
+|           4 | Walsh         |
+|           1 | John          |
++-------------+---------------+
+
+7. mysql> SELECT c.Customer_Name,count(*) as max from Customer c JOIN Orders o on o.Customer_Id=c.Customer_Id group by o.Customer_Id Order by max DESC LIMIT 1;
++---------------+-----+
+| Customer_Name | max |
++---------------+-----+
+| John          |   2 |
++---------------+-----+
+
+8.
+
+9.
+
+10. mysql> SELECT Product_Name, Product_Price FROM Product WHERE Product_Id = (   SELECT Product_Id   FROM Order_Details   ORDER BY Quantity * (SELECT Product_Price FROM Product WHERE Product_Id = Order_Details.Product_Id) DESC   LIMIT 1 );
++--------------+---------------+
+| Product_Name | Product_Price |
++--------------+---------------+
+| Computer     |      35900.00 |
++--------------+---------------+ 
