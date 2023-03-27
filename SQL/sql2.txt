@@ -86,9 +86,19 @@ r_Details od on o.Order_Id=od.Order_Id JOIN Product p on p.Product_Id=od.Product
 | John          |   2 |
 +---------------+-----+
 
-8.
+8. mysql> SELECT c.Customer_Id , c.Customer_Name from Customer c JOIN Orders o on o.Customer_Id=c.Customer_ID group by year(Order_Date),o.Customer_Id having count(*)>1;
++-------------+---------------+
+| Customer_Id | Customer_Name |
++-------------+---------------+
+|           1 | John          |
++-------------+---------------+
 
-9.
+9. mysql> SELECT MONTHNAME(Order_Date) from Orders o group by MONTHNAME(Order_Date) Order by count(month(Order_Date)) DESC LIMIT 1;
++-----------------------+
+| MONTHNAME(Order_Date) |
++-----------------------+
+| March                 |
++-----------------------+
 
 10. mysql> SELECT Product_Name, Product_Price FROM Product WHERE Product_Id = (   SELECT Product_Id   FROM Order_Details   ORDER BY Quantity * (SELECT Product_Price FROM Product WHERE Product_Id = Order_Details.Product_Id) DESC   LIMIT 1 );
 +--------------+---------------+
